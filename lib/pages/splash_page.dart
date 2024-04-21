@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:task_management_and_to_do_list/pages/home_page.dart';
+import 'package:task_management_and_to_do_list/pages/bottom_nav_bar.dart';
 
 class SplashPage extends StatefulWidget {
   static const String id="splash_page";
@@ -11,19 +11,12 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   Future.delayed(const Duration(seconds: 3), () {
-  //     Navigator.pushReplacementNamed(context, HomePage.id);
-  //   });
-  // }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff544A71),
+      backgroundColor: const Color(0xff544A71),
       body: Container(
         width: double.infinity,
         color: const Color(0xfff3f0ff),
@@ -58,37 +51,9 @@ class _SplashPageState extends State<SplashPage> {
                 style: TextStyle(color: Colors.black54, fontSize: 18),
               ),
             ),
-            // Padding(
-            //   padding: const EdgeInsets.all(30.0),
-            //   child: Container(
-            //     decoration: BoxDecoration(
-            //       borderRadius: BorderRadius.circular(5),
-            //       color: Color(0xff5f33e1),
-            //     ),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         SizedBox(width: MediaQuery.of(context).size.width*0.3,),
-            //         Text(
-            //           "Let's start",
-            //           textAlign: TextAlign.center,
-            //           style: TextStyle(color: Colors.white, fontSize: 20),
-            //         ),
-            //         SizedBox(width: 50,),
-            //
-            //         IconButton(
-            //             onPressed: () {},
-            //             icon: Icon(
-            //               Icons.arrow_forward,
-            //               color: Colors.white,
-            //             ),),
-            //       ],
-            //     ),
-            //   ),
-            // ),
             GestureDetector(
               onTap: () {
-                Navigator.pushReplacementNamed(context, HomePage.id);
+                Navigator.pushReplacementNamed(context, BottomNavBar.id);
               },
               child: Container(
                 height: 48,
@@ -115,7 +80,7 @@ class _SplashPageState extends State<SplashPage> {
                         child: IconButton(
                             onPressed: () {
                               Navigator.pushReplacementNamed(
-                                  context, HomePage.id);
+                                  context, BottomNavBar.id);
                             },
                             icon: const Icon(
                               Icons.arrow_forward,

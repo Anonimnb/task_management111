@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_management_and_to_do_list/pages/home_page.dart';
+import 'package:task_management_and_to_do_list/pages/bottom_nav_bar.dart';
 import 'package:task_management_and_to_do_list/pages/splash_page.dart';
 import 'package:task_management_and_to_do_list/screens/add_new_task_screen.dart';
 
@@ -23,9 +23,9 @@ class MyApp extends StatelessWidget {
       ),
       home:const SplashPage(),
       routes: {
-        HomePage.id:(context)=>HomePage(),
-        SplashPage.id:(context)=>SplashPage(),
-        AddNewTaskScreen.id:(context)=>AddNewTaskScreen(),
+        BottomNavBar.id:(context)=>const BottomNavBar(),
+        SplashPage.id:(context)=>const SplashPage(),
+        AddNewTaskScreen.id:(context)=>const AddNewTaskScreen(),
 
       },
     );

@@ -1,6 +1,3 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TypeOfTasks {
@@ -49,31 +46,34 @@ class ListOfTasks {
         typeOfWhatDo: "Market Research",
         time: "10:00 AM",
         taskIcon: Icons.local_post_office_rounded,
-        colorOfIcon: Color(0xfff478b8),
+        colorOfIcon: const Color(0xfff478b8),
         stateOfTask: "Done",
-        colorOfStateOfTask: Color(0xff8666e9)),
+        colorOfStateOfTask: const Color(0xff8666e9)),
     TypeOfTasks(
       nameOfTask: "Grocery shopping app design",
       typeOfWhatDo: "Competitive Analysis",
       time: '12:00 PM',
-      colorOfIcon: Color(0xfff478b8),
-      taskIcon: Icons.local_post_office_rounded, stateOfTask: 'In Progress', colorOfStateOfTask: Color(0xffff9674),
+      colorOfIcon: const Color(0xfff478b8),
+      taskIcon: Icons.local_post_office_rounded,
+      stateOfTask: 'In Progress',
+      colorOfStateOfTask: const Color(0xffff9674),
     ),
     TypeOfTasks(
       nameOfTask: "Uber Eats redesign challenge",
       typeOfWhatDo: "Create Low-fidelity Wireframe",
       time: '07:00 PM',
-      colorOfIcon: Color(0xff9260f4),
-      taskIcon: Icons.account_circle, stateOfTask: 'To do', colorOfStateOfTask: Color(0xff359fff),
+      colorOfIcon: const Color(0xff9260f4),
+      taskIcon: Icons.account_circle,
+      stateOfTask: 'To do',
+      colorOfStateOfTask: const Color(0xff359fff),
     ),
     TypeOfTasks(
         nameOfTask: "About design sprint",
         typeOfWhatDo: "How to pitch a Design Sprint",
         time: '09:00 PM',
-        colorOfIcon: Color(0xffff9142),
-        taskIcon: Icons.local_post_office_rounded, stateOfTask: 'To do',colorOfStateOfTask: Color(0xff359fff)
-    ),
-
-
+        colorOfIcon: const Color(0xffff9142),
+        taskIcon: Icons.local_post_office_rounded,
+        stateOfTask: 'To do',
+        colorOfStateOfTask: const Color(0xff359fff)),
   ];
 }

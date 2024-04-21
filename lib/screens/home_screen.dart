@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:task_management_and_to_do_list/classes/in_progress_cards.dart';
-import 'package:task_management_and_to_do_list/view_tasks/tasks_card_ver.dart';
+import 'package:task_management_and_to_do_list/cards/task_groups_card.dart';
+import 'package:task_management_and_to_do_list/classes/in_progress_class.dart';
 
-import '../classes/task_groups_cards.dart';
-import '../view_tasks/tasks_card_hor.dart';
+import '../cards/in_progress_card.dart';
+import '../classes/task_groups_class.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,9 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  double percentProgres = 0.75265;
-
-  //double radius = 25;
+  double percentProgress = 0.75265;
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 150,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
-                    color: Color(0xff5f33e1),
+                    color: const Color(0xff5f33e1),
                   ),
                   child: Stack(
                     children: [
@@ -115,14 +113,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: const EdgeInsets.only(bottom: 20, left: 20),
                           width: 128,
                           height: 36,
-                          child: Text(
+                          child: const Text(
                             "View task",
                             style: TextStyle(
                                 color: Color(0xff5f33e1), fontSize: 18),
                           ),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: Color(0xffeee9ff)),
+                              color: const Color(0xffeee9ff)),
                         ),
                       ),
                       Align(
@@ -130,15 +128,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 85),
                           child: CircularPercentIndicator(
+                            animation: true,
                             radius: 37,
                             lineWidth: 7,
-                            percent: percentProgres,
-                            progressColor: Color(0xffeee9ff),
-                            backgroundColor: Color(0xffeee9ff).withOpacity(0.4),
+                            percent: percentProgress,
+                            progressColor: const Color(0xffeee9ff),
+                            backgroundColor:
+                                const Color(0xffeee9ff).withOpacity(0.4),
                             circularStrokeCap: CircularStrokeCap.round,
+                            animationDuration: 1000,
                             center: Text(
-                              "${percentProgres * 10000 ~/ 10 / 10}%",
-                              style: TextStyle(
+                              "${percentProgress * 10000 ~/ 10 / 10}%",
+                              style: const TextStyle(
                                   color: Color(0xffeee9ff),
                                   fontWeight: FontWeight.w500),
                             ),
@@ -172,8 +173,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding:
-                    EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 10),
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, top: 0, bottom: 10),
                 child: Row(
                   children: [
                     const Text(
@@ -193,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          "${TaskCardList.cardClass.length}",
+                          "${InProgressList.list.length}",
                           style: const TextStyle(
                               color: Color(0xff5f33e1),
                               fontWeight: FontWeight.w500),
@@ -211,17 +212,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 170,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: TaskCardList.cardClass.length,
+                      itemCount: InProgressList.list.length,
                       itemBuilder: (context, index) {
-                        return TasksCard(card: TaskCardList.cardClass[index]);
+                        return InProgressCard(card: InProgressList.list[index]);
                       }),
                 ),
               ),
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding:
-                    EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, top: 20, bottom: 20),
                 child: Row(
                   children: [
                     const Text(
@@ -241,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          "${TaskCardList2.cardClass2.length}",
+                          "${TaskGroupsList.list.length}",
                           style: const TextStyle(
                               color: Color(0xff5f33e1),
                               fontWeight: FontWeight.w500),
@@ -255,11 +256,11 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  return TasksCard2(
-                    cardClass2: TaskCardList2.cardClass2[index],
+                  return TaskGroupsCard(
+                    taskGroupsClass: TaskGroupsList.list[index],
                   );
                 },
-                childCount: TaskCardList2.cardClass2.length, // 1000 list items
+                childCount: TaskGroupsList.list.length, // 1000 list items
               ),
             ),
           ],
@@ -267,17 +268,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-// Widget circularImage(Student student) {
-//   return ClipOval(
-//     child: CachedNetworkImage(
-//       imageUrl: student.imageUrl,
-//       width: radius * 2,
-//       height: radius * 2,
-//       fit: BoxFit.cover,
-//       placeholder: (context, url) => CircularProgressIndicator(),
-//       errorWidget: (context, url, error) => Icon(Icons.error),
-//     ),
-//   );
-// }
 }
