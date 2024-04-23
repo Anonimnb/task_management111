@@ -61,7 +61,7 @@ class InProgressCard extends StatelessWidget {
                   style: const TextStyle(
                       fontWeight: FontWeight.w600, fontSize: 20),
                 ),
-              )),
+              ),),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
