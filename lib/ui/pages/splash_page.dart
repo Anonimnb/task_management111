@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:task_management_and_to_do_list/pages/bottom_nav_bar.dart';
+import 'bottom_nav_bar.dart';
 
 class SplashPage extends StatefulWidget {
   static const String id="splash_page";

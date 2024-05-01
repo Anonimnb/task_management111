@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:task_management_and_to_do_list/cards/task_groups_card.dart';
-import 'package:task_management_and_to_do_list/classes/in_progress_class.dart';
-
 import '../cards/in_progress_card.dart';
+import '../cards/task_groups_card.dart';
+import '../classes/in_progress_class.dart';
 import '../classes/task_groups_class.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,28 +19,28 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // decoration: BoxDecoration(
-        //   gradient: RadialGradient(
-        //     center: Alignment.topLeft,
-        //     tileMode: TileMode.clamp,
-        //     radius: 2,
-        //     colors: [
-        //       Colors.white,
-        //       Colors.white,
-        //       Colors.purpleAccent.shade100.withOpacity(0.5),
-        //       Colors.white,
-        //       Colors.white,
-        //       Colors.white,
-        //       Colors.white,
-        //       Colors.yellowAccent.shade100.withOpacity(0.5),
-        //       Colors.white,
-        //       Colors.white,
-        //       Colors.white,
-        //       Colors.white,
-        //       Colors.blueAccent.shade100.withOpacity(0.5),
-        //     ],
-        //   ),
-        // ),
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment.topLeft,
+            tileMode: TileMode.clamp,
+            radius: 2,
+            colors: [
+              Colors.white,
+              Colors.white,
+              Colors.purpleAccent.shade100.withOpacity(0.1),
+              Colors.white,
+              Colors.white,
+              Colors.white,
+              Colors.white,
+              Colors.yellowAccent.shade100.withOpacity(0.1),
+              Colors.white,
+              Colors.white,
+              Colors.white,
+              Colors.white,
+              Colors.blueAccent.shade100.withOpacity(0.1),
+            ],
+          ),
+        ),
         child: CustomScrollView(
           slivers: [
             SliverPadding(
@@ -113,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: const EdgeInsets.only(bottom: 20, left: 20),
                           width: 128,
                           height: 36,
-                          child: const Text(
+                           child: const  Text(
                             "View task",
                             style: TextStyle(
                                 color: Color(0xff5f33e1), fontSize: 18),
@@ -155,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Center(
                             child: IconButton(
                               onPressed: () {},
-                              padding: EdgeInsets.zero,
+                              padding:  EdgeInsets.zero,
                               icon: Icon(Icons.more_horiz,
                                   color: Colors.white, size: 20),
                             ),
@@ -180,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text(
                       "In Progress",
                       style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 26),
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                     ),
                     const SizedBox(
                       width: 8,
@@ -228,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text(
                       "Task Groups",
                       style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 26),
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                     ),
                     const SizedBox(
                       width: 8,

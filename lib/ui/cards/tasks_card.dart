@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_management_and_to_do_list/model/type_of_tasks.dart';
+import 'package:task_management_and_to_do_list/ui/classes/type_of_tasks.dart';
 
 class TasksCard extends StatelessWidget {
   const TasksCard({super.key, required this.typeOfTasks});
@@ -12,13 +12,6 @@ class TasksCard extends StatelessWidget {
       margin: const EdgeInsets.only(top: 18, right: 24, left: 24, bottom: 6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 2,
-            blurStyle: BlurStyle.outer,
-            color: Colors.grey.withOpacity(0.35),
-          )
-        ],
       ),
       height: 120,
       child: Stack(

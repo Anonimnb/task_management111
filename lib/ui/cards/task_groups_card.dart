@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:task_management_and_to_do_list/classes/task_groups_class.dart';
+
+import '../classes/task_groups_class.dart';
 
 class TaskGroupsCard extends StatelessWidget {
   const TaskGroupsCard({super.key, required this.taskGroupsClass});
@@ -13,11 +14,6 @@ class TaskGroupsCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12,left: 20,right: 20),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [ BoxShadow(
-            color: Colors.grey.shade300,
-            spreadRadius: 1,
-            blurRadius: 8,
-        )],
         borderRadius: BorderRadius.circular(20)
       ),
       height: 75,

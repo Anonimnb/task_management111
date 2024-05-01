@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CardClass {
+class InProgressClass {
   IconData taskIcon;
   String typeOfTask;
   String nameOfTask;
@@ -9,7 +8,7 @@ class CardClass {
   Color colorOfContainer;
   Color colorOfTaskIcon;
 
-  CardClass({
+  InProgressClass({
     required this.taskIcon,
     required this.typeOfTask,
     required this.nameOfTask,
@@ -21,44 +20,44 @@ class CardClass {
 
 }
 
-class TaskCardList{
-  static List<CardClass> cardClass = [
-    CardClass(
+class InProgressList{
+  static List<InProgressClass> list = [
+    InProgressClass(
       taskIcon: Icons.local_post_office_rounded,
       typeOfTask: "Office Project",
       nameOfTask: "Grocery Shopping app design",
       percentOfTask: 0.7,
-      colorOfContainer: Colors.blue.shade400, colorOfTaskIcon: Color(0xfff478b8),
+      colorOfContainer: Colors.blue.shade400, colorOfTaskIcon: const Color(0xfff478b8),
     ),
-    CardClass(
+    InProgressClass(
       taskIcon: Icons.account_circle,
       typeOfTask: "Personal Project",
       nameOfTask: "Uber Eats redesign challenge",
       percentOfTask: 0.52,
-      colorOfContainer: const Color(0xffff7d53), colorOfTaskIcon: Color(0xff9260f4),
+      colorOfContainer: const Color(0xffff7d53), colorOfTaskIcon: const Color(0xff9260f4),
     ),
-    CardClass(
-      taskIcon: Icons.local_post_office_rounded,
+    InProgressClass(
+      taskIcon: Icons.book,
       typeOfTask: "Daily Study",
       nameOfTask: "IT programming UI tasks",
       percentOfTask: 0.87,
-      colorOfContainer: const Color(0xffe7f3ff), colorOfTaskIcon: Color(0xffff9142),
+      colorOfContainer:  Colors.pink.shade400, colorOfTaskIcon: const Color(0xffff9142),
     ),
 
 
-    CardClass(
+    InProgressClass(
       taskIcon: Icons.local_post_office_rounded,
       typeOfTask: "Office Project",
       nameOfTask: "Grocery Shopping app design",
       percentOfTask: 0.7,
-      colorOfContainer: const Color(0xffe7f3ff), colorOfTaskIcon: Color(0xfff478b8),
+      colorOfContainer:  Colors.blueGrey.shade300, colorOfTaskIcon: const Color(0xfff478b8),
     ),
-    CardClass(
+    InProgressClass(
       taskIcon: Icons.local_post_office_rounded,
       typeOfTask: "Office Project",
       nameOfTask: "Grocery Shopping app design",
       percentOfTask: 0.7,
-      colorOfContainer: const Color(0xffe7f3ff), colorOfTaskIcon: Color(0xffff9142),
+      colorOfContainer: const Color(0xffff7d53), colorOfTaskIcon: const Color(0xffff9142),
     ),
   ];
 }
