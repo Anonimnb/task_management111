@@ -1,6 +1,10 @@
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
+import 'package:task_management_and_to_do_list/controllers/nav_controller.dart';
+import 'package:task_management_and_to_do_list/controllers/task_controller.dart';
 import 'package:task_management_and_to_do_list/model/tasks.dart';
 import '../../service/hive_db.dart';
 import '../../service/toast.dart';
@@ -18,6 +22,8 @@ class AddNewTaskScreen extends StatefulWidget {
 }
 
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
+  final _taskController = Get.put(TaskController());
+  final _navController = Get.put(NavController());
   TextEditingController nameOfTaskController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController startDateController = TextEditingController();
@@ -26,30 +32,20 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   String? description;
   String? startDate;
   String? endDate;
+  String? taskGroup;
   late Tasks tasks;
   HiveService hiveService = HiveService();
   List<Tasks> list1 = [];
 
   bool isExpanded = false;
-  List<String> list = [
-    "Work",
-    "Personal work",
-    "Office Projects",
-    "Daily Study",
-  ];
-  String string = "";
 
-  void setTaskGroup(String taskGroup) {
-    setState(() {
-      string = taskGroup;
-    });
-  }
 
   storeInfo() {
     String nameOfTask = nameOfTaskController.text.trim();
     String description = descriptionController.text.trim();
     String startDate = startDateController.text.trim();
     String endDate = endDateController.text.trim();
+    String taskGroup = _taskController.subtitleText.toString();
     if (nameOfTask.isNotEmpty &&
         description.isNotEmpty &&
         startDate.isNotEmpty &&
@@ -59,6 +55,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
         description: description,
         startDate: startDate,
         endDate: endDate,
+        taskGroup: taskGroup,
       );
       setState(() {
         list1.add(tasks);
@@ -69,14 +66,9 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     }
   }
 
-
   DateTime selectedTime = DateTime.now();
 
   @override
-  void initState() {
-    super.initState();
-    string = list.first;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,16 +86,37 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, BottomNavBar.id);
                 },
-                icon: const Icon(Icons.arrow_back),
+                icon: SvgPicture.asset("assets/images/arrow-left.svg"),
               ),
               actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.notifications,
-                    size: 28,
+                SizedBox(
+                  height: 56,
+                  width: 56,
+                  child: Stack(
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: SvgPicture.asset(
+                          "assets/images/notification.svg",
+                          height: 28,
+                          width: 28,
+                        ),
+                      ),
+                      //If yozish kk notification bulsa;
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 10, right: 23),
+                          height: 8,
+                          width: 8,
+                          decoration: BoxDecoration(
+                              color: const Color(0xff5f33e1),
+                              borderRadius: BorderRadius.circular(4)),
+                        ),
+                      )
+                    ],
                   ),
-                ),
+                )
               ],
             ),
             const SliverToBoxAdapter(
@@ -112,84 +125,97 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
               ),
             ),
             SliverToBoxAdapter(
-              child: Container(
-                margin: const EdgeInsets.only(
-                    left: 20, top: 20, right: 20, bottom: 0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.grey.shade300,
-                        blurRadius: 2,
-                        blurStyle: BlurStyle.outer),
-                  ],
-                ),
-                child: ExpansionTile(
-                  title: ListTile(
-                    leading: Container(
-                      height: 32,
-                      width: 32,
-                      decoration: BoxDecoration(
-                        color: const Color(0xfff478b8).withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(8),
+              child: Column(
+                children: [
+                  Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      leading: Obx(() => Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: _taskController.containerColor.value,
+                            ),
+                            child: Icon(
+                              _taskController.iconData.value,
+                              color: _taskController.iconColor.value,
+                            ),
+                          )),
+                      title:  Text('Task Group',style: TextStyle(color: Colors.grey.shade400,fontWeight: FontWeight.w400,fontSize: 14),),
+                      subtitle: Obx(
+                        () => Text(
+                          _taskController.subtitleText.value.toString(),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.local_post_office_rounded,
-                        color: Color(0xfff478b8),
+                      trailing: Icon(
+                        _navController.customTileExpanded.isFalse
+                            ? Icons.arrow_drop_down_sharp
+                            : Icons.arrow_drop_up,
                       ),
-                    ),
-                    subtitle: Text(
-                      string,
-                      style:
-                          const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                    ),
-                    // subtitle:
-
-                    title: Text(
-                      "Task Group",
-                      style:
-                          TextStyle(color: Colors.grey.shade400, fontSize: 12),
-                    ),
-                  ),
-                  children: [
-                    Container(
-                      height: list.length > 4 ? 50.0 * 5 : 50.0 * list.length,
-                      padding:const  EdgeInsets.symmetric(),
-                      child: ListView.builder(
-                          itemCount: list.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  setTaskGroup(list[index]);
-                                });
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        blurRadius: 0.1,
-                                        color: Colors.grey.shade100
-                                            .withOpacity(0.7),
-                                      ),
-                                    ]),
-                                height: 25,
-                                margin: const EdgeInsets.only(
-                                    bottom: 15, left: 15, right: 15),
-                                width: double.infinity,
+                      children: <Widget>[
+                        ListTile(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Obx(() => TextButton(
+                                    onPressed: () {
+                                      _taskController
+                                          .updateIconAndColor("Work");
+                                    },
+                                    child: Text(
+                                        _taskController.subtitleText.value ==
+                                                "Work"
+                                            ? "Work"
+                                            : "Work"),
+                                  )),
+                              Obx(() => TextButton(
+                                    onPressed: () {
+                                      _taskController
+                                          .updateIconAndColor("Personal tasks");
+                                    },
+                                    child: Text(
+                                        _taskController.subtitleText.value ==
+                                                "Personal tasks"
+                                            ? "Personal tasks"
+                                            : "Personal tasks"),
+                                  )),
+                              Obx(() => TextButton(
+                                    onPressed: () {
+                                      _taskController
+                                          .updateIconAndColor("Daily Study");
+                                    },
+                                    child: Text(
+                                        _taskController.subtitleText.value ==
+                                                "Daily Study"
+                                            ? "Daily Study"
+                                            : "Daily Study"),
+                                  )),
+                              Obx(() => TextButton(
+                                onPressed: () {
+                                  _taskController
+                                      .updateIconAndColor("Office Projects");
+                                },
                                 child: Text(
-                                  "${list[index]}",
-                                  style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            );
-                          }),
-                    )
-                  ],
-                ),
+                                    _taskController.subtitleText.value ==
+                                        "Office Projects"
+                                        ? "Office Projects"
+                                        : "Office Projects"),
+                              )),
+
+                            ],
+                          ),
+                        ),
+                      ],
+                      onExpansionChanged: (bool expanded) {
+                        _navController.onExpansionChanged(expanded);
+                      },
+                    ),
+                  )
+                ],
               ),
             ),
             const SliverToBoxAdapter(
@@ -291,9 +317,9 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                             .toString();
 
                         setState(() {
-                          selectedTime = selectedTime.add(const Duration(days: 1));
+                          selectedTime =
+                              selectedTime.add(const Duration(days: 1));
                         });
-
                       },
                       icon: const Icon(
                         Icons.arrow_drop_down_sharp,
@@ -385,8 +411,8 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
           style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xff5f33e1),
               padding: const EdgeInsets.symmetric(vertical: 12),
-              minimumSize:const  Size(double.infinity, 45)),
-          child:const  Text(
+              minimumSize: const Size(double.infinity, 45)),
+          child: const Text(
             "Add Project",
             style: TextStyle(
               color: Colors.white,
