@@ -28,11 +28,13 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController startDateController = TextEditingController();
   TextEditingController endDateController = TextEditingController();
+  TextEditingController typeOfWhatDoController = TextEditingController();
   String? nameOfTask;
   String? description;
   String? startDate;
   String? endDate;
   String? taskGroup;
+  String? typeOFWhatDo="To Do";
   late Tasks tasks;
   HiveService hiveService = HiveService();
   List<Tasks> list1 = [];
@@ -45,6 +47,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     String description = descriptionController.text.trim();
     String startDate = startDateController.text.trim();
     String endDate = endDateController.text.trim();
+    String typeOFWhatDo = typeOfWhatDoController.text.trim();
     String taskGroup = _taskController.subtitleText.toString();
     if (nameOfTask.isNotEmpty &&
         description.isNotEmpty &&
@@ -55,7 +58,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
         description: description,
         startDate: startDate,
         endDate: endDate,
-        taskGroup: taskGroup,
+        taskGroup: taskGroup, typeOfWhatDO: typeOFWhatDo,
       );
       setState(() {
         list1.add(tasks);

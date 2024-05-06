@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'bottom_nav_bar.dart';
 
 class SplashPage extends StatefulWidget {
-  static const String id="splash_page";
+  static const String id = "splash_page";
+
   const SplashPage({super.key});
 
   @override
@@ -11,8 +13,6 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +35,7 @@ class _SplashPageState extends State<SplashPage> {
             const Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                "Task Management &\n To-Do List",
+                "Task Management",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Color(0xff131215),
@@ -44,7 +44,8 @@ class _SplashPageState extends State<SplashPage> {
               ),
             ),
             const Padding(
-              padding: EdgeInsets.only(right: 20,left: 20,top: 10,bottom: 30),
+              padding:
+                  EdgeInsets.only(right: 20, left: 20, top: 10, bottom: 30),
               child: Text(
                 "This productive tool is designed to help you better manage your task\n project-wise conveniently!",
                 textAlign: TextAlign.center,
@@ -57,10 +58,10 @@ class _SplashPageState extends State<SplashPage> {
               },
               child: Container(
                 height: 48,
-                margin:const  EdgeInsets.only(left: 25, right: 25, bottom: 70),
+                margin: const EdgeInsets.only(left: 25, right: 25, bottom: 70),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(17),
-                  color:const  Color(0xff5f33e1),
+                  color: const Color(0xff5f33e1),
                 ),
                 child: Stack(
                   children: [
@@ -78,14 +79,13 @@ class _SplashPageState extends State<SplashPage> {
                           right: 10,
                         ),
                         child: IconButton(
-                            onPressed: () {
-                              Navigator.pushReplacementNamed(
-                                  context, BottomNavBar.id);
-                            },
-                            icon: const Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                            )),
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(
+                                context, BottomNavBar.id);
+                          },
+                          icon:
+                              SvgPicture.asset("assets/images/arrow-right.svg",color: Colors.white,),
+                        ),
                       ),
                     )
                   ],

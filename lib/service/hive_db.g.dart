@@ -11,7 +11,7 @@ class TasksAdapter extends TypeAdapter<Tasks> {
         nameOfTask: reader.readString(),
         description: reader.readString(),
         startDate: reader.readString(),
-        endDate: reader.readString());
+        endDate: reader.readString(), taskGroup: reader.readString(), typeOfWhatDO: reader.readString());
   }
   @override
   void write(BinaryWriter writer,Tasks obj){
@@ -19,5 +19,7 @@ class TasksAdapter extends TypeAdapter<Tasks> {
     writer.writeString(obj.description);
     writer.writeString(obj.startDate);
     writer.writeString(obj.endDate);
+    writer.writeString(obj.taskGroup);
+    writer.writeString(obj.typeOfWhatDO);
   }
 }

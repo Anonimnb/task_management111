@@ -10,23 +10,33 @@ class Tasks {
   String startDate;
   @HiveField(3)
   String endDate;
+  @HiveField(4)
+  String taskGroup;
+  @HiveField(4)
+  String typeOfWhatDO;
 
   Tasks(
       {required this.nameOfTask,
       required this.description,
       required this.startDate,
-      required this.endDate});
+      required this.endDate,
+      required this.taskGroup,
+      required this.typeOfWhatDO});
 
   Tasks.fromJson(Map<String, dynamic> json)
       : nameOfTask = json["nameOfTask"],
         description = json["description"],
         startDate = json["startDate"],
-        endDate = json["endDate"];
+        endDate = json["endDate"],
+        taskGroup = json["taskGroup"],
+        typeOfWhatDO = json["typeOfWhatDo"];
 
   Map<String, dynamic> toJson() => {
         "nameOfTask": nameOfTask,
         "description": description,
         "startDate": startDate,
         "endDate": endDate,
+        "taskGroup": taskGroup,
+        "typeOfWhatDO": typeOfWhatDO,
       };
 }

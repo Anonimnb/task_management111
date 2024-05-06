@@ -57,11 +57,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
         child: PageView(
           controller: pageController,
           scrollDirection: Axis.horizontal,
-          children: [
-            const HomeScreen(),
-            const DoingTaskScreen(),
-            ListOfTasks(),
-            const AccountPage(),
+          children:const [
+             HomeScreen(),
+             DoingTaskScreen(),
+             ListOfTasks(),
+             AccountPage(),
           ],
           onPageChanged: (int index) {
             setState(

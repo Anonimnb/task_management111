@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import '../cards/in_progress_card.dart';
 import '../cards/task_groups_card.dart';
@@ -75,11 +76,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 actions: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.notifications,
-                      size: 28,
+                  SizedBox(
+                    height: 56,
+                    width: 56,
+                    child: Stack(
+                      children: [
+                        IconButton(
+                          onPressed: () {},
+                          icon: SvgPicture.asset(
+                            "assets/images/notification.svg",
+                            height: 28,
+                            width: 28,
+                          ),
+                        ),
+                        //If yozish kk notification bulsa;
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 10, right: 23),
+                            height: 8,
+                            width: 8,
+                            decoration: BoxDecoration(
+                                color: const Color(0xff5f33e1),
+                                borderRadius: BorderRadius.circular(4)),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ],
@@ -112,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: const EdgeInsets.only(bottom: 20, left: 20),
                           width: 128,
                           height: 36,
-                           child: const  Text(
+                          child: const Text(
                             "View task",
                             style: TextStyle(
                                 color: Color(0xff5f33e1), fontSize: 18),
@@ -154,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Center(
                             child: IconButton(
                               onPressed: () {},
-                              padding:  EdgeInsets.zero,
+                              padding: EdgeInsets.zero,
                               icon: Icon(Icons.more_horiz,
                                   color: Colors.white, size: 20),
                             ),
@@ -170,6 +192,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+            ///*******************************
+            //In progress
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -218,6 +242,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+            ///********************************
+            //Task Groups
+            ///********************************
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -262,6 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 childCount: TaskGroupsList.list.length, // 1000 list items
               ),
             ),
+            ///********************************
           ],
         ),
       ),
