@@ -1,7 +1,9 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:task_management_and_to_do_list/ui/pages/task_details.dart';
 import '../../model/tasks.dart';
 import '../../service/hive_db.dart';
 import '../classes/type_of_tasks.dart';
@@ -222,176 +224,231 @@ class _DoingTaskScreenState extends State<DoingTaskScreen> {
                         ? const SizedBox(
                             height: 40,
                           )
-                        : Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            width: double.infinity,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                // Text(projects[index].taskGroup),
-                                // Text(projects[index].nameOfTask),
-                                //
-                                Container(
-                                  margin:const  EdgeInsets.only(top: 15),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  height: 120,
-                                  child: Stack(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Container(
-                                            margin: const EdgeInsets.only(
-                                                left: 15, right: 15),
-                                            child: Text(
-                                              projects[index].nameOfTask,
-                                              style:const TextStyle(
-                                                  color: Color(0xffbab8c1),
-                                                  fontSize: 16),
-                                            )),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Container(
+                        : GestureDetector(
+                            onTap: () {
+                              Get.off(TaskDetails(
+                                tasks: projects[index],
+                              ));
+                              // showModalBottomSheet(
+                              //   context: context,
+                              //   builder: (BuildContext context) {
+                              //     return SizedBox(
+                              //       height: MediaQuery.of(context).size.height,
+                              //       child: Center(
+                              //         child: ElevatedButton(
+                              //             onPressed: () {
+                              //               Navigator.pop(context);
+                              //             },
+                              //             child: const Text("Close")),
+                              //       ),
+                              //     );
+                              //   },
+                              // );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(
+                                    blurRadius: 2,
+                                    blurStyle: BlurStyle.normal,
+                                    offset: Offset.infinite,
+                                    color: Colors.grey,
+                                  )
+                                ],
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              width: double.infinity,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // Text(projects[index].taskGroup),
+                                  // Text(projects[index].nameOfTask),
+                                  //
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 15),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    height: 120,
+                                    child: Stack(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 15, right: 15),
+                                              child: Text(
+                                                projects[index].nameOfTask,
+                                                style: const TextStyle(
+                                                    color: Color(0xffbab8c1),
+                                                    fontSize: 16),
+                                              )),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 15,
+                                                  top: 15,
+                                                  bottom: 15),
+                                              child: Text(
+                                                projects[index].taskGroup,
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 20),
+                                              )),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Container(
                                             margin: const EdgeInsets.only(
                                                 left: 15, top: 15, bottom: 15),
-                                            child: Text(
-                                              projects[index].taskGroup,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 20),
-                                            )),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 15, top: 15, bottom: 15),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.watch_later,
-                                                color: Color(0xff9260f4)
-                                                    .withOpacity(0.4),
-                                                size: 20,
-                                              ),
-                                              const SizedBox(
-                                                width: 5,
-                                              ),
-                                              Text(
-                                                projects[index].startDate,
-                                                style: TextStyle(
-                                                  color:const Color(0xff9260f4)
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.watch_later,
+                                                  color: const Color(0xff9260f4)
                                                       .withOpacity(0.4),
+                                                  size: 20,
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topRight,
-                                        child: Container(
-                                          height: 25,
-                                          width: 20,
-                                          margin: const EdgeInsets.only(
-                                            right: 15,
-                                            top: 5,
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              if (projects[index].taskGroup ==
-                                                  "Personal tasks")
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color:const  Color(0xffff7d53)
-                                                        .withOpacity(0.3),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                  ),
-                                                  child:const  Center(
-                                                    child: Icon(
-                                                      Icons.account_circle,
-                                                      color: Color(0xffff7d53),
-                                                      size: 20,
-                                                    ),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Text(
+                                                  projects[index].startDate,
+                                                  style: TextStyle(
+                                                    color:
+                                                        const Color(0xff9260f4)
+                                                            .withOpacity(0.4),
                                                   ),
                                                 ),
-                                              if (projects[index].taskGroup ==
-                                                  "Work")
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0xfff478b8)
-                                                        .withOpacity(0.3),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                  ),
-                                                  child: const Center(
-                                                    child: Icon(
-                                                      Icons
-                                                          .local_post_office_rounded,
-                                                      color: Color(0xfff478b8),
-                                                      size: 20,
-                                                    ),
-                                                  ),
-                                                ),
-                                              if (projects[index].taskGroup ==
-                                                  "Office Projects")
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.blue.shade100,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                  ),
-                                                  child:const  Center(
-                                                    child: Icon(
-                                                      Icons.person,
-                                                      color: Colors.blue,
-                                                      size: 20,
-                                                    ),
-                                                  ),
-                                                ),
-                                              if (projects[index].taskGroup ==
-                                                  "Daily Study")
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0xffff9142)
-                                                        .withOpacity(0.3),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                  ),
-                                                  child:const  Center(
-                                                    child: Icon(
-                                                      Icons.book,
-                                                      color: Color(0xffff9142),
-                                                      size: 20,
-                                                    ),
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: Container(
-                                          child: Center(
-                                            child: Text(
-                                              projects[index].typeOfWhatDO
+                                              ],
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
+                                        Align(
+                                          alignment: Alignment.topRight,
+                                          child: Container(
+                                            height: 25,
+                                            width: 20,
+                                            margin: const EdgeInsets.only(
+                                              right: 15,
+                                              top: 5,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                if (projects[index].taskGroup ==
+                                                    "Personal tasks")
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(
+                                                              0xffff7d53)
+                                                          .withOpacity(0.3),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: const Center(
+                                                      child: Icon(
+                                                        Icons.account_circle,
+                                                        color:
+                                                            Color(0xffff7d53),
+                                                        size: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                if (projects[index].taskGroup ==
+                                                    "Work")
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Color(0xfff478b8)
+                                                          .withOpacity(0.3),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: const Center(
+                                                      child: Icon(
+                                                        Icons
+                                                            .local_post_office_rounded,
+                                                        color:
+                                                            Color(0xfff478b8),
+                                                        size: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                if (projects[index].taskGroup ==
+                                                    "Office Projects")
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          Colors.blue.shade100,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: const Center(
+                                                      child: Icon(
+                                                        Icons.person,
+                                                        color: Colors.blue,
+                                                        size: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                if (projects[index].taskGroup ==
+                                                    "Daily Study")
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Color(0xffff9142)
+                                                          .withOpacity(0.3),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: const Center(
+                                                      child: Icon(
+                                                        Icons.book,
+                                                        color:
+                                                            Color(0xffff9142),
+                                                        size: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: Container(
+                                            height: 25,
+                                            width: 50,
+                                            decoration: BoxDecoration(
+                                                color: const Color(0xff359fff)
+                                                    .withOpacity(0.3),
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
+                                            margin: const EdgeInsets.only(
+                                                right: 15, bottom: 15),
+                                            child: Center(
+                                              child: Text(
+                                                projects[index].typeOfWhatDO,
+                                                style: const TextStyle(
+                                                    color: Color(0xff359fff),
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           );
                   },

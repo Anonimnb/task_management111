@@ -58,7 +58,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
         description: description,
         startDate: startDate,
         endDate: endDate,
-        taskGroup: taskGroup, typeOfWhatDO: typeOFWhatDo,
+        taskGroup: taskGroup, typeOfWhatDO: "To Do",
       );
       setState(() {
         list1.add(tasks);
