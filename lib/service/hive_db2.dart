@@ -1,8 +1,8 @@
 import 'package:hive/hive.dart';
 
-class HiveService {
-  String boxName = "KeyTasks";
-  String id = "key";
+class HiveService2 {
+  String boxName = "KeyTasks2";
+  String id = "box1keys";
 
   // key = dd/MM/yyyy
 
@@ -12,20 +12,16 @@ class HiveService {
   }
 
   //Add
-  storeTasks(List newList, String id) async {
+  storeTasks2(List newList, String id) async {
     var myBox = await box();
     myBox.put(id, newList);
   }
 
 //Get
-  getTasks(String id) async {
+  getTasks2(String id) async {
     var myBox = await box();
     List list = [];
     list.addAll(myBox.get(id) ?? []);
     return list;
-  }
-  deleteTasks(String id) async{
-    var myBox=await box();
-    myBox.delete(id);
   }
 }

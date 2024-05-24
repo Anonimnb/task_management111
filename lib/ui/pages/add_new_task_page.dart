@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +9,7 @@ import 'package:task_management_and_to_do_list/controllers/nav_controller.dart';
 import 'package:task_management_and_to_do_list/controllers/task_controller.dart';
 import 'package:task_management_and_to_do_list/model/tasks.dart';
 import '../../service/hive_db.dart';
+import '../../service/hive_db2.dart';
 import '../../service/toast.dart';
 import 'bottom_nav_bar.dart';
 
@@ -34,20 +37,30 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   String? startDate;
   String? endDate;
   String? taskGroup;
-  String? typeOFWhatDo="To Do";
+  String? typeOFWhatDo = "To Do";
   late Tasks tasks;
   HiveService hiveService = HiveService();
   List<Tasks> list1 = [];
 
   bool isExpanded = false;
+  HiveService2 hiveService2=HiveService2();
 
+
+  addKeyBox2() async{
+    List list= await hiveService2.getTasks2("box1keys");
+    if(!list.contains(startDateController.text)){
+      list.insert(0,startDateController.text);
+      hiveService2.storeTasks2(list,"box1keys");
+      log("Add key ${startDateController.text}");
+      log("Box2 : ${await hiveService2.getTasks2("box1keys")}");
+    }
+  }
 
   storeInfo() {
     String nameOfTask = nameOfTaskController.text.trim();
     String description = descriptionController.text.trim();
     String startDate = startDateController.text.trim();
     String endDate = endDateController.text.trim();
-    String typeOFWhatDo = typeOfWhatDoController.text.trim();
     String taskGroup = _taskController.subtitleText.toString();
     if (nameOfTask.isNotEmpty &&
         description.isNotEmpty &&
@@ -58,7 +71,8 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
         description: description,
         startDate: startDate,
         endDate: endDate,
-        taskGroup: taskGroup, typeOfWhatDO: "To Do",
+        taskGroup: taskGroup,
+        typeOfWhatDO: "To Do",
       );
       setState(() {
         list1.add(tasks);
@@ -70,8 +84,6 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   }
 
   DateTime selectedTime = DateTime.now();
-
-  @override
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +158,13 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                               color: _taskController.iconColor.value,
                             ),
                           )),
-                      title:  Text('Task Group',style: TextStyle(color: Colors.grey.shade400,fontWeight: FontWeight.w400,fontSize: 14),),
+                      title: Text(
+                        'Task Group',
+                        style: TextStyle(
+                            color: Colors.grey.shade400,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14),
+                      ),
                       subtitle: Obx(
                         () => Text(
                           _taskController.subtitleText.value.toString(),
@@ -198,17 +216,16 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                                             : "Daily Study"),
                                   )),
                               Obx(() => TextButton(
-                                onPressed: () {
-                                  _taskController
-                                      .updateIconAndColor("Office Projects");
-                                },
-                                child: Text(
-                                    _taskController.subtitleText.value ==
-                                        "Office Projects"
-                                        ? "Office Projects"
-                                        : "Office Projects"),
-                              )),
-
+                                    onPressed: () {
+                                      _taskController.updateIconAndColor(
+                                          "Office Projects");
+                                    },
+                                    child: Text(
+                                        _taskController.subtitleText.value ==
+                                                "Office Projects"
+                                            ? "Office Projects"
+                                            : "Office Projects"),
+                                  )),
                             ],
                           ),
                         ),
@@ -403,13 +420,15 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
               await hiveService.storeTasks(list1, key);
               Future.delayed(Duration.zero);
             } else {
+              storeInfo();
+              lst.add(list1.first);
               for (Tasks item in await hiveService.getTasks(key)) {
                 lst.add(item);
               }
-              storeInfo();
-              lst.add(list1.first);
               hiveService.storeTasks(lst, key);
             }
+            addKeyBox2();
+
           },
           style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xff5f33e1),

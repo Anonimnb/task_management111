@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
@@ -10,8 +12,8 @@ import 'list_tasks_page.dart';
 
 class BottomNavBar extends StatefulWidget {
   static const String id = "home_page";
-
-  const BottomNavBar({super.key});
+  final int pageId;
+  const BottomNavBar({required this.pageId,super.key});
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -26,9 +28,20 @@ class _BottomNavBarState extends State<BottomNavBar> {
   ];
 
   int _bottomNavIndex = 0;
-  PageController pageController = PageController(initialPage: 0);
+  PageController pageController = PageController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    log(widget.pageId.toString() + " << page id");
+    if(widget.pageId != 0) {
+      pageController = PageController(initialPage: widget.pageId);
+      _bottomNavIndex = widget.pageId;
+    } else {
+      pageController = PageController(initialPage: 0);
+    }
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(

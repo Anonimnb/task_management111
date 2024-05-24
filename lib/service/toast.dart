@@ -27,7 +27,7 @@ class Toast2222{
   }
   static void showToast3() {
     Fluttertoast.showToast(
-      msg: "Your task is got successfully",
+      msg: "Your task is done",
       // toastLength: Toast.LENGTH_SHORT,
       // gravity: ToastGravity.BOTTOM,
       // timeInSecForIosWeb: 1,
@@ -39,7 +39,7 @@ class Toast2222{
   }
   static void showToast4() {
     Fluttertoast.showToast(
-      msg: "Can't get,try again later!",
+      msg: "Can't update, something went wrong!",
       // toastLength: Toast.LENGTH_SHORT,
       // gravity: ToastGravity.BOTTOM,
       // timeInSecForIosWeb: 1,
@@ -51,7 +51,7 @@ class Toast2222{
   }
   static void showToast5() {
     Fluttertoast.showToast(
-      msg: "Login deleted",
+      msg: "Task deleted",
       // toastLength: Toast.LENGTH_SHORT,
       // gravity: ToastGravity.BOTTOM,
       // timeInSecForIosWeb: 1,

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import '../../model/tasks.dart';
+import '../../service/hive_db.dart';
+import '../../service/hive_db2.dart';
 import '../cards/in_progress_card.dart';
 import '../cards/task_groups_card.dart';
-import '../classes/in_progress_class.dart';
 import '../classes/task_groups_class.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,7 +17,148 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  double percentProgress = 0.75265;
+  //////////////////*******************************
+  List<Tasks> officeProjects = [];
+  List<Tasks> personalProjects = [];
+  List<Tasks> dailyStudyProjects = [];
+  List<Tasks> workProjects = [];
+  List<double> percentProgressList = [0, 0, 0, 0];
+
+  HiveService hiveService = HiveService();
+  HiveService2 hiveService2 = HiveService2();
+
+  getSavedTasks() async {
+    for (String key in await hiveService2.getTasks2("box1keys")) {
+      for (Tasks task in await hiveService.getTasks(key)) {
+        if (task.taskGroup == "Office Projects") {
+          setState(
+            () {
+              officeProjects.add(task);
+            },
+          );
+        }
+        if (task.taskGroup == "Personal tasks") {
+          setState(
+            () {
+              personalProjects.add(task);
+            },
+          );
+        }
+        if (task.taskGroup == "Work") {
+          setState(
+            () {
+              workProjects.add(task);
+            },
+          );
+        }
+        if (task.taskGroup == "Daily Study") {
+          setState(
+            () {
+              dailyStudyProjects.add(task);
+            },
+          );
+        }
+      }
+    }
+    int allCount = officeProjects.length;
+    int doneCount = 0;
+    for (Tasks item in await officeProjects) {
+      if (item.typeOfWhatDO == "Done") {
+        doneCount++;
+      }
+    }
+    setState(() {
+      if (allCount != 0) percentProgressList[0] = doneCount / allCount;
+    });
+  }
+
+  ///////////////***********************************
+
+  projectsCount() async {
+    for (String key in await hiveService2.getTasks2("box1keys")) {
+      for (Tasks task in await hiveService.getTasks(key)) {
+        if (task.typeOfWhatDO == "Done" && task.typeOfWhatDO == "To Do") {
+          setState(
+            () {
+              officeProjects.add(task);
+            },
+          );
+        }
+        switch (task.taskGroup) {
+          case "Office Project":
+            {
+              officeProjects.add(task);
+              if (task.typeOfWhatDO == "Done") {
+                percentProgressList[0]++;
+              }
+            }
+            break;
+          case "Personal Project":
+            {
+              personalProjects.add(task);
+              if (task.typeOfWhatDO == "Done") {
+                percentProgressList[1]++;
+              }
+            }
+            break;
+          case "Daily Study":
+            {
+              officeProjects.add(task);
+              if (task.typeOfWhatDO == "Done") {
+                percentProgressList[2]++;
+              }
+            }
+            break;
+          case "Work":
+            {
+              officeProjects.add(task);
+              if (task.typeOfWhatDO == "Done") {
+                percentProgressList[3]++;
+              }
+            }
+            break;
+        }
+      }
+    }
+  }
+
+  ///////////////***********************************
+  List<Color> listOfColors = [
+    Colors.blue.shade50,
+    Colors.orange.shade50,
+    Colors.blueGrey.shade50,
+    Colors.purple.shade50
+  ];
+  List<Tasks> listPercent = [];
+  double percentProgress = 0.0;
+
+  getStart() async {
+    DateTime time = DateTime.now();
+
+    String key = DateFormat("dd/MM/yyyy").format(time);
+    for (Tasks screensCards in await hiveService.getTasks(key)) {
+      setState(() {
+        listPercent.add(screensCards);
+      });
+    }
+    int allCount = listPercent.length;
+    int doneCount = 0;
+    for (Tasks item in await listPercent) {
+      if (item.typeOfWhatDO == "Done") {
+        doneCount++;
+      }
+    }
+    setState(() {
+      if (allCount != 0) percentProgress = doneCount / allCount;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getStart();
+    getSavedTasks();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,19 +273,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Align(
                         alignment: Alignment.bottomLeft,
-                        child: Container(
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.only(bottom: 20, left: 20),
-                          width: 128,
-                          height: 36,
-                          child: const Text(
-                            "View task",
-                            style: TextStyle(
-                                color: Color(0xff5f33e1), fontSize: 18),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            alignment: Alignment.center,
+                            margin: const EdgeInsets.only(bottom: 20, left: 20),
+                            width: 128,
+                            height: 36,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: const Color(0xffeee9ff)),
+                            child: const Text(
+                              "View task",
+                              style: TextStyle(
+                                  color: Color(0xff5f33e1), fontSize: 18),
+                            ),
                           ),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: const Color(0xffeee9ff)),
                         ),
                       ),
                       Align(
@@ -158,12 +305,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const Color(0xffeee9ff).withOpacity(0.4),
                             circularStrokeCap: CircularStrokeCap.round,
                             animationDuration: 1000,
-                            center: Text(
-                              "${percentProgress * 10000 ~/ 10 / 10}%",
-                              style: const TextStyle(
-                                  color: Color(0xffeee9ff),
-                                  fontWeight: FontWeight.w500),
-                            ),
+                            center: listPercent.isNotEmpty
+                                ? Text(
+                                    "${percentProgress * 10000 ~/ 10 / 10}%",
+                                    style: const TextStyle(
+                                        color: Color(0xffeee9ff),
+                                        fontWeight: FontWeight.w500),
+                                  )
+                                : SvgPicture.asset(
+                                    "assets/images/dead_emoji.svg",
+                                    height: 40,
+                                    width: 40,
+                                  ),
                           ),
                         ),
                       ),
@@ -173,17 +326,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: const EdgeInsets.only(right: 20, top: 20),
                           height: 30,
                           width: 38,
+                          decoration: BoxDecoration(
+                            color: Colors.white60.withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                           child: Center(
                             child: IconButton(
                               onPressed: () {},
                               padding: EdgeInsets.zero,
-                              icon: Icon(Icons.more_horiz,
+                              icon: const Icon(Icons.more_horiz,
                                   color: Colors.white, size: 20),
                             ),
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white60.withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(15),
                           ),
                         ),
                       )
@@ -192,6 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+
             ///*******************************
             //In progress
             SliverToBoxAdapter(
@@ -217,7 +371,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          "${InProgressList.list.length}",
+                          "${listPercent.length}",
                           style: const TextStyle(
                               color: Color(0xff5f33e1),
                               fontWeight: FontWeight.w500),
@@ -231,17 +385,24 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverToBoxAdapter(
               child: GestureDetector(
                 onTap: () {},
-                child: Container(
-                  height: 170,
+                child: SizedBox(
+                  height: 140,
                   child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: InProgressList.list.length,
-                      itemBuilder: (context, index) {
-                        return InProgressCard(card: InProgressList.list[index]);
-                      }),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: listPercent.length + 1,
+                    itemBuilder: (context, index) {
+                      return index == listPercent.length
+                          ? const SizedBox(width: 60)
+                          : InProgressCard(
+                              card: listPercent[index],
+                              cardColor: listOfColors[index % 4],
+                            );
+                    },
+                  ),
                 ),
               ),
             ),
+
             ///********************************
             //Task Groups
             ///********************************
@@ -279,16 +440,55 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return TaskGroupsCard(
-                    taskGroupsClass: TaskGroupsList.list[index],
-                  );
-                },
-                childCount: TaskGroupsList.list.length, // 1000 list items
-              ),
-            ),
+            SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 1000,
+                  child: ListView(
+                                children: [
+                  Container(
+                    height: 120,
+                    width: double.infinity,
+
+                    child: TaskGroupsCard(
+                      percentProgress: percentProgressList[0],
+                      officeTasks: officeProjects,
+                      taskGroups: 'Office Projects',
+                    ),
+                  ),
+                  Container(
+                    height: 120,
+                    width: double.infinity,
+
+
+                    child: TaskGroupsCard(
+                      percentProgress: percentProgressList[1],
+                      officeTasks: personalProjects,
+                      taskGroups: 'Work',
+                    ),
+                  ),
+                  Container(
+                    height: 120,
+                  width: double.infinity,
+                    child: TaskGroupsCard(
+                      percentProgress: percentProgressList[2],
+                      officeTasks: dailyStudyProjects,
+                      taskGroups: 'Personal tasks',
+                    ),
+                  ),
+                  Container(
+                    height: 120,
+                    width: double.infinity,
+
+                    child: TaskGroupsCard(
+                      percentProgress: percentProgressList[3],
+                      officeTasks: workProjects,
+                      taskGroups: 'Daily Study',
+                    ),
+                  ),
+                                ],
+                              ),
+                ))
+
             ///********************************
           ],
         ),

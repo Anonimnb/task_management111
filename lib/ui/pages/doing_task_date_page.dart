@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:task_management_and_to_do_list/ui/pages/task_details.dart';
+import 'package:task_management_and_to_do_list/ui/widgets/delete_task.dart';
 import '../../model/tasks.dart';
 import '../../service/hive_db.dart';
-import '../classes/type_of_tasks.dart';
 import 'bottom_nav_bar.dart';
 
 class DoingTaskScreen extends StatefulWidget {
@@ -17,31 +17,35 @@ class DoingTaskScreen extends StatefulWidget {
 }
 
 class _DoingTaskScreenState extends State<DoingTaskScreen> {
-  List<String> list1 = ["All", "To do", "In Progress", "Done"];
+  List<String> list1 = ["All", "To Do", "Done"];
+  List<Tasks> projects = [];
+  HiveService hiveService = HiveService();
   String taskType = "All";
-  List<TypeOfTasks> list2 = [];
+  String selectedTime = "";
 
-  sortList() {
+  sortList(String key) async {
     if (taskType == "All") {
-      setState(() {
-        list2 = ListOfTasks.list;
-      });
-    } else {
-      list2 = [];
-      for (TypeOfTasks screensCards in ListOfTasks.list) {
-        if (screensCards.stateOfTask == taskType) {
+      projects = [];
+      for (Tasks screensCards in await hiveService.getTasks(key)) {
           setState(() {
-            list2.add(screensCards);
+            projects.add(screensCards);
+          });
+
+      }
+    } else {
+      projects = [];
+      for (Tasks screensCards in await hiveService.getTasks(key)) {
+        if (screensCards.typeOfWhatDO == taskType) {
+          setState(() {
+            projects.add(screensCards);
           });
         }
       }
     }
   }
 
-  List<Tasks> projects = [];
-  HiveService hiveService = HiveService();
-
   getSavedTasks(String key) async {
+    projects=[];
     for (Tasks item in await hiveService.getTasks(key)) {
       setState(() {
         projects.add(item);
@@ -52,7 +56,9 @@ class _DoingTaskScreenState extends State<DoingTaskScreen> {
   @override
   void initState() {
     super.initState();
-    sortList();
+    DateTime time = DateTime.now();
+    String key = DateFormat("dd/MM/yyyy").format(time);
+    getSavedTasks(key);
   }
 
   @override
@@ -129,7 +135,7 @@ class _DoingTaskScreenState extends State<DoingTaskScreen> {
                       )
                     ],
                   ),
-                )
+                ),
               ],
             ),
             SliverToBoxAdapter(
@@ -137,11 +143,14 @@ class _DoingTaskScreenState extends State<DoingTaskScreen> {
                 child: EasyDateTimeLine(
                   initialDate: DateTime.now(),
                   onDateChange: (selectedDate) {
+                    selectedTime =
+                        DateFormat("dd/MM/yyyy").format(selectedDate);
                     String key = DateFormat("dd/MM/yyyy").format(selectedDate);
-                    setState(() {
-                      projects = [];
-                    });
+
                     getSavedTasks(key);
+                    setState(() {
+                      taskType="All";
+                    });
                   },
                   headerProps: const EasyHeaderProps(
                     dateFormatter: DateFormatter.fullDateDMY(),
@@ -187,7 +196,8 @@ class _DoingTaskScreenState extends State<DoingTaskScreen> {
                                 taskType = list1[index];
                                 Future.delayed(
                                     const Duration(milliseconds: 100));
-                                sortList();
+
+                                sortList(selectedTime);
                               });
                             },
                             child: Container(
@@ -226,9 +236,12 @@ class _DoingTaskScreenState extends State<DoingTaskScreen> {
                           )
                         : GestureDetector(
                             onTap: () {
-                              Get.off(TaskDetails(
-                                tasks: projects[index],
-                              ));
+                              Get.off(
+                                TaskDetails(
+                                  tasks: projects[index],
+                                  taskIndex: index,
+                                ),
+                              );
                               // showModalBottomSheet(
                               //   context: context,
                               //   builder: (BuildContext context) {
@@ -263,9 +276,6 @@ class _DoingTaskScreenState extends State<DoingTaskScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  // Text(projects[index].taskGroup),
-                                  // Text(projects[index].nameOfTask),
-                                  //
                                   Container(
                                     margin: const EdgeInsets.only(top: 15),
                                     decoration: BoxDecoration(
@@ -299,6 +309,37 @@ class _DoingTaskScreenState extends State<DoingTaskScreen> {
                                                     fontWeight: FontWeight.w600,
                                                     fontSize: 20),
                                               )),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Container(
+                                            margin: const EdgeInsets.only(
+                                                right: 15, bottom: 8),
+                                            height: 36,
+                                            width: 36,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Colors.brown.shade100),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    showCupertinoDialogExample(
+                                                      context,
+                                                      selectedTime,
+                                                      index,
+                                                      projects,
+                                                    );
+                                                  });
+                                                },
+                                                icon: const Center(
+                                                  child: Icon(
+                                                    Icons.delete,
+                                                    color: Colors.brown,
+                                                    size: 24,
+                                                  ),
+                                                )),
+                                          ),
                                         ),
                                         Align(
                                           alignment: Alignment.bottomLeft,
@@ -401,7 +442,8 @@ class _DoingTaskScreenState extends State<DoingTaskScreen> {
                                                     "Daily Study")
                                                   Container(
                                                     decoration: BoxDecoration(
-                                                      color: Color(0xffff9142)
+                                                      color: const Color(
+                                                              0xffff9142)
                                                           .withOpacity(0.3),
                                                       borderRadius:
                                                           BorderRadius.circular(

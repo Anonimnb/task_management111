@@ -1,78 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:task_management_and_to_do_list/model/tasks.dart';
 
-import '../classes/task_groups_class.dart';
+class TaskGroupsCard extends StatefulWidget {
+  TaskGroupsCard(
+      {required this.taskGroups,
+      required this.percentProgress,
+      required this.officeTasks,
+      super.key});
 
-class TaskGroupsCard extends StatelessWidget {
-  const TaskGroupsCard({super.key, required this.taskGroupsClass});
+  final String taskGroups;
+  final double percentProgress;
+  final List<Tasks> officeTasks;
 
-  final TaskGroupsClass taskGroupsClass;
+  @override
+  State<TaskGroupsCard> createState() => _TaskGroupsCardState();
+}
+
+class _TaskGroupsCardState extends State<TaskGroupsCard> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12,left: 20,right: 20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20)
-      ),
-      height: 75,
+      height: 140,
       child: Stack(
         children: [
           Align(
             alignment: Alignment.centerLeft,
             child: Container(
-              margin: const EdgeInsets.only(left: 20),
-              height: 45,
-              width: 45,
-              child: Icon(taskGroupsClass.taskIcon, color: taskGroupsClass.colorOfTaskIcon,size: 32,),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
-                color: taskGroupsClass.colorOfTaskIcon.withOpacity(0.4),
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(
+                color: widget.taskGroups=="Work"?Color(0xfff478b8).withOpacity(0.3):widget.taskGroups == "Office Projects"?Colors.blue.withOpacity(0.3):widget.taskGroups == "Daily Study"?Color(
+                    0xffff9142).withOpacity(0.3):Color(
+                    0xffff7d53).withOpacity(0.3),
+
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Center(
+                child: Icon(
+                  widget.taskGroups == "Office Projects"
+                      ? Icons.person
+                      : widget.taskGroups == "Work"
+                          ? Icons.local_post_office_rounded
+                          : widget.taskGroups == "Daily Study"
+                              ? Icons.book
+                              : Icons.account_circle,
+                  color: widget.taskGroups=="Work"?Color(0xfff478b8):widget.taskGroups == "Office Projects"?Colors.blue:widget.taskGroups == "Daily Study"?Color(
+                      0xffff9142):Color(
+                      0xffff7d53),
+                ),
               ),
             ),
           ),
           Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-              margin: const EdgeInsets.only(top: 15,left: 80),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    taskGroupsClass.typeOfTask,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height:4,),
-                  Text(
-                    "${taskGroupsClass.numberOfTasks} Tasks",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        color: Color(0xff797686),),
-                  ),
-                ],
-              ),
-            ),
+            alignment: Alignment.topCenter,
+            child: Text(widget.taskGroups),
           ),
           Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              margin: const EdgeInsets.only(right: 15,top: 15),
+            alignment: Alignment.bottomCenter,
+            child: Text("${widget.officeTasks.length} Tasks"),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 85),
               child: CircularPercentIndicator(
-                radius: 24,
-                lineWidth: 5,
-                percent: taskGroupsClass.percentOfTask/100,
-                progressColor:taskGroupsClass.colorOfTaskIcon,
-                backgroundColor: taskGroupsClass.colorOfTaskIcon.withOpacity(0.4),
+                animation: true,
+                radius: 37,
+                lineWidth: 7,
+                percent: widget.percentProgress,
+                progressColor: const Color(0xffeee9ff),
+                backgroundColor: const Color(0xffeee9ff).withOpacity(0.4),
                 circularStrokeCap: CircularStrokeCap.round,
+                animationDuration: 1000,
                 center: Text(
-                  "${taskGroupsClass.percentOfTask*10~/10}%",
+                  "${widget.percentProgress * 10000 ~/ 10 / 10}%",
                   style: const TextStyle(
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w500),
+                      color: Color(0xffeee9ff), fontWeight: FontWeight.w500),
                 ),
               ),
             ),
