@@ -45,6 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
         if (task.taskGroup == "Work"
+
+
             ) {
           setState(
             () {
