@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:task_management_and_to_do_list/ui/pages/task_details.dart';
-import 'package:task_management_and_to_do_list/ui/widgets/delete_task.dart';
 import '../../model/tasks.dart';
 import '../../service/hive_db.dart';
 import 'bottom_nav_bar.dart';
@@ -242,21 +241,6 @@ class _DoingTaskScreenState extends State<DoingTaskScreen> {
                                   taskIndex: index,
                                 ),
                               );
-                              // showModalBottomSheet(
-                              //   context: context,
-                              //   builder: (BuildContext context) {
-                              //     return SizedBox(
-                              //       height: MediaQuery.of(context).size.height,
-                              //       child: Center(
-                              //         child: ElevatedButton(
-                              //             onPressed: () {
-                              //               Navigator.pop(context);
-                              //             },
-                              //             child: const Text("Close")),
-                              //       ),
-                              //     );
-                              //   },
-                              // );
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -309,37 +293,6 @@ class _DoingTaskScreenState extends State<DoingTaskScreen> {
                                                     fontWeight: FontWeight.w600,
                                                     fontSize: 20),
                                               )),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Container(
-                                            margin: const EdgeInsets.only(
-                                                right: 15, bottom: 8),
-                                            height: 36,
-                                            width: 36,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: Colors.brown.shade100),
-                                            child: IconButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    showCupertinoDialogExample(
-                                                      context,
-                                                      selectedTime,
-                                                      index,
-                                                      projects,
-                                                    );
-                                                  });
-                                                },
-                                                icon: const Center(
-                                                  child: Icon(
-                                                    Icons.delete,
-                                                    color: Colors.brown,
-                                                    size: 24,
-                                                  ),
-                                                )),
-                                          ),
                                         ),
                                         Align(
                                           alignment: Alignment.bottomLeft,

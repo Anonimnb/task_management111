@@ -12,13 +12,14 @@ class TaskDetails extends StatefulWidget {
   Tasks tasks;
   int taskIndex;
 
-   TaskDetails({required this.tasks, required this.taskIndex, super.key});
+  TaskDetails({required this.tasks, required this.taskIndex, super.key});
 
   @override
   State<TaskDetails> createState() => _TaskDetailsState();
 }
 
 class _TaskDetailsState extends State<TaskDetails> {
+  String _typeOfWhatDO = "To-Do";
   final _taskController = Get.put(TaskController());
 
   TextEditingController nameOfTaskController = TextEditingController();
@@ -31,7 +32,7 @@ class _TaskDetailsState extends State<TaskDetails> {
 
   List<Tasks> projects = [];
 
-  storeInfo() async {
+  storeInfo(String typeOfWhatDO) async {
     String nameOfTask = nameOfTaskController.text.trim();
     String description = descriptionController.text.trim();
     String startDate = startDateController.text.trim();
@@ -47,7 +48,7 @@ class _TaskDetailsState extends State<TaskDetails> {
         startDate: startDate,
         endDate: endDate,
         taskGroup: taskGroup,
-        typeOfWhatDO: "Done",
+        typeOfWhatDO: typeOfWhatDO,
       );
       for (Tasks item in await hiveService.getTasks(widget.tasks.startDate)) {
         setState(() {
@@ -93,6 +94,11 @@ class _TaskDetailsState extends State<TaskDetails> {
 
   void initialEndDate() {
     endDateController.text = widget.tasks.endDate;
+  }
+  void _updateTaskState(String newTypeOfWhatDO) {
+    setState(() {
+      _typeOfWhatDO = newTypeOfWhatDO;
+    });
   }
 
   @override
@@ -201,8 +207,7 @@ class _TaskDetailsState extends State<TaskDetails> {
                                         fontWeight: FontWeight.w400),
                                   ),
                                   IconButton(
-                                    onPressed: () {
-                                    },
+                                    onPressed: () {},
                                     icon: const Icon(Icons.delete),
                                   ),
                                 ],
@@ -453,25 +458,18 @@ class _TaskDetailsState extends State<TaskDetails> {
                             const SizedBox(
                               width: 10,
                             ),
-                            GestureDetector(
-                              onTap: () async {
-                                String key = widget.tasks.startDate;
-                                storeInfo();
-                                hiveService.storeTasks(projects, key);
-                              },
-                              child: Container(
-                                height: 20,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  color:
-                                      const Color(0xff8666e9).withOpacity(0.3),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    "Done",
-                                    style: TextStyle(color: Color(0xff8666e9)),
-                                  ),
+                            Container(
+                              height: 20,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color:
+                                    const Color(0xff8666e9).withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child:  Center(
+                                child: Text(
+                                  _typeOfWhatDO.toString(),
+                                  style: const TextStyle(color: Color(0xff8666e9)),
                                 ),
                               ),
                             ),
@@ -517,9 +515,63 @@ class _TaskDetailsState extends State<TaskDetails> {
             ),
             const SliverToBoxAdapter(
               child: SizedBox(
-                height: 40,
+                height: 10,
               ),
             ),
+            SliverToBoxAdapter(
+                child: GestureDetector(
+              onTap: () async {
+                _updateTaskState("To-Do");
+                String key = widget.tasks.startDate;
+                await storeInfo("To-Do");
+                hiveService.storeTasks(projects, key);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Container(
+                  height: 50,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      "To-Do",
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            )),
+            SliverToBoxAdapter(
+                child: GestureDetector(
+              onTap: () async {
+                _updateTaskState("Done");
+                String key = widget.tasks.startDate;
+                await storeInfo("Done");
+                hiveService.storeTasks(projects, key);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Container(
+                  height: 50,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      "Done",
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            )),
           ],
         ),
       ),

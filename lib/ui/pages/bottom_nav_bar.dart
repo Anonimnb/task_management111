@@ -4,6 +4,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 
+import '../../main.dart';
 import 'account_page.dart';
 import 'add_new_task_page.dart';
 import 'doing_task_date_page.dart';
@@ -70,11 +71,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
         child: PageView(
           controller: pageController,
           scrollDirection: Axis.horizontal,
-          children:const [
-             HomeScreen(),
-             DoingTaskScreen(),
+          children: [
+             const HomeScreen(),
+             const DoingTaskScreen(),
              ListOfTasks(),
-             AccountPage(),
+            AccountPage(),
           ],
           onPageChanged: (int index) {
             setState(
@@ -124,7 +125,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
             onTap: (index) {
               setState(() {
                 _bottomNavIndex = index;
-                //pageController = PageController(initialPage: index);
                 pageController.jumpToPage(index);
               });
             }

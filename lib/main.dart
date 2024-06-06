@@ -9,10 +9,16 @@ import 'package:task_management_and_to_do_list/service/hive_db2.g.dart';
 import 'package:task_management_and_to_do_list/ui/pages/bottom_nav_bar.dart';
 import 'package:task_management_and_to_do_list/ui/pages/splash_page.dart';
 import 'package:task_management_and_to_do_list/ui/pages/add_new_task_page.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 import 'model/tasks.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  await Hive.openBox('ImageData');
   await Hive.initFlutter();
+  await Hive.openBox("UserName");
   Hive.registerAdapter(TasksAdapter());
   await Hive.openBox<Tasks>("Tasks");
   Hive.registerAdapter(TasksAdapter2());

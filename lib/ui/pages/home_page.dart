@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import '../../controllers/images_controller.dart';
 import '../../model/tasks.dart';
 import '../../service/hive_db.dart';
 import '../../service/hive_db2.dart';
 import '../cards/in_progress_card.dart';
-import '../cards/task_groups_card.dart';
 import '../classes/task_groups_class.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,7 +21,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //////////////////*******************************
   List<Tasks> officeProjects = [];
   List<Tasks> personalProjects = [];
   List<Tasks> dailyStudyProjects = [];
@@ -26,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   HiveService hiveService = HiveService();
   HiveService2 hiveService2 = HiveService2();
+  final imagePickerController = Get.put(ImagePickerController());
 
   getSavedTasks() async {
     for (String key in await hiveService2.getTasks2("box1keys")) {
@@ -44,10 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           );
         }
-        if (task.taskGroup == "Work"
-
-
-            ) {
+        if (task.taskGroup == "Work") {
           setState(
             () {
               workProjects.add(task);
@@ -74,9 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (allCount != 0) percentProgressList[0] = doneCount / allCount;
     });
   }
-
-  ///////////////***********************************
-
   projectsCount() async {
     for (String key in await hiveService2.getTasks2("box1keys")) {
       for (Tasks task in await hiveService.getTasks(key)) {
@@ -124,8 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
   }
-
-  ///////////////***********************************
   List<Color> listOfColors = [
     Colors.blue.shade50,
     Colors.orange.shade50,
@@ -134,6 +130,16 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   List<Tasks> listPercent = [];
   double percentProgress = 0.0;
+  double percentProgress1 = 0.0;
+  double percentProgress2 = 0.0;
+  double percentProgress3 = 0.0;
+  double percentProgress4 = 0.0;
+
+  int doneCount1=0;
+  int doneCount2=0;
+  int doneCount3=0;
+  int doneCount4=0;
+  int doneCount=0;
 
   getStart() async {
     DateTime time = DateTime.now();
@@ -145,14 +151,25 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
     int allCount = listPercent.length;
-    int doneCount = 0;
     for (Tasks item in await listPercent) {
-      if (item.typeOfWhatDO == "Done") {
-        doneCount++;
+      if (item.typeOfWhatDO == "Done"&& item.taskGroup=="Work") {
+        doneCount1++;
+      }else if(item.typeOfWhatDO == "Done"&& item.taskGroup=="Office Projects"){
+        doneCount2++;
+      }else if(item.typeOfWhatDO == "Done"&& item.taskGroup=="Daily Study"){
+        doneCount3++;
+      }else if(item.typeOfWhatDO == "Done"&& item.taskGroup=="Personal tasks"){
+        doneCount4++;
       }
     }
     setState(() {
+      doneCount=doneCount4+doneCount3+doneCount2+doneCount1;
       if (allCount != 0) percentProgress = doneCount / allCount;
+      if (allCount != 0) percentProgress1 = doneCount1 / allCount;
+      if (allCount != 0) percentProgress2 = doneCount2 / allCount;
+      if (allCount != 0) percentProgress3 = doneCount3 / allCount;
+      if (allCount != 0) percentProgress4 = doneCount4 / allCount;
+
     });
   }
 
@@ -165,6 +182,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final imagePickerController = Get.put(ImagePickerController());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final savedImagePath = await imagePickerController.getSavedImagePath();
+      imagePickerController.imagePath.value = savedImagePath;
+    });
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -196,13 +218,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 backgroundColor: Colors.transparent,
                 leading: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: const Image(
-                      image: AssetImage("assets/images/man image.jpeg"),
-                      fit: BoxFit.cover,
-                      width: 30,
-                      height: 30,
+                  child: Obx(
+                        () => GestureDetector(
+                      onTap: imagePickerController.pickImage,
+                      child: Container(
+                          height: 200,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(110),
+                            border: imagePickerController.imagePath.value != null
+                                ? null
+                                : Border.all(color: Colors.grey),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(110),
+                            child: imagePickerController.imagePath.value != null
+                                ? Image.file(
+                                File(imagePickerController.imagePath.value!),fit: BoxFit.cover)
+                                : const Center(child: Text('Tap to select image')),
+                          )),
                     ),
                   ),
                 ),
@@ -216,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                     ),
                     Text(
-                      "Yuldoshev Jahongir",
+                      "User Name",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                     ),
@@ -267,10 +302,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Stack(
                     children: [
-                      const Padding(
+                       Padding(
                         padding: EdgeInsets.all(20.0),
                         child: Text(
-                          "Your today's task\nalmost done!",
+                          "Your today's tasks\nalmost done",
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ),
@@ -348,9 +383,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-
-            ///*******************************
-            //In progress
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -405,10 +437,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-
-            ///********************************
-            //Task Groups
-            ///********************************
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -444,55 +472,342 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 1000,
-                  child: ListView(
-                                children: [
-                  Container(
-                    height: 120,
-                    width: double.infinity,
-
-                    child: TaskGroupsCard(
-                      percentProgress: percentProgressList[0],
-                      officeTasks: officeProjects,
-                      taskGroups: 'Office Projects',
-                    ),
-                  ),
-                  Container(
-                    height: 120,
-                    width: double.infinity,
-
-
-                    child: TaskGroupsCard(
-                      percentProgress: percentProgressList[1],
-                      officeTasks: personalProjects,
-                      taskGroups: 'Work',
-                    ),
-                  ),
-                  Container(
-                    height: 120,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Container(
+                  height: 90,
                   width: double.infinity,
-                    child: TaskGroupsCard(
-                      percentProgress: percentProgressList[2],
-                      officeTasks: dailyStudyProjects,
-                      taskGroups: 'Personal tasks',
-                    ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  Container(
-                    height: 120,
-                    width: double.infinity,
-
-                    child: TaskGroupsCard(
-                      percentProgress: percentProgressList[3],
-                      officeTasks: workProjects,
-                      taskGroups: 'Daily Study',
-                    ),
-                  ),
-                                ],
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 20),
+                          height: 45,
+                          width: 45,
+                          child: Icon(
+                            Icons.local_post_office_rounded,
+                            color: Colors.blue,
+                            size: 32,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.blue.shade100,
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 15, left: 80),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Office Projects",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                ),
                               ),
-                ))
-
-            ///********************************
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                "$doneCount2 Tasks",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Color(0xff797686),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 15, top: 15),
+                          child: CircularPercentIndicator(
+                            radius: 27,
+                            lineWidth: 5,
+                            percent: percentProgress2,
+                            progressColor: const Color(0xfff478b8),
+                            backgroundColor: const Color(0xfff478b8).withOpacity(0.4),
+                            circularStrokeCap: CircularStrokeCap.round,
+                            center: Text(
+                              "${(percentProgress2*100).toStringAsFixed(1)} %",
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Container(
+                  height: 90,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 20),
+                          height: 45,
+                          width: 45,
+                          child: Icon(
+                            Icons.account_circle,
+                            color: Color(0xffff7d53),
+                            size: 32,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xffff7d53).withOpacity(0.3),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 15, left: 80),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Personal Project",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                "$doneCount4 Tasks",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Color(0xff797686),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 15, top: 15),
+                          child: CircularPercentIndicator(
+                            radius: 27,
+                            lineWidth: 5,
+                            percent: percentProgress4,
+                            progressColor: const Color(0xfff478b8),
+                            backgroundColor: const Color(0xfff478b8).withOpacity(0.4),
+                            circularStrokeCap: CircularStrokeCap.round,
+                            center: Text(
+                              "${(percentProgress4*100).toStringAsFixed(1)} %",
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Container(
+                  height: 90,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 20),
+                          height: 45,
+                          width: 45,
+                          child: Icon(
+                            Icons.person,
+                            color:Color(0xfff478b8),
+                            size: 32,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xfff478b8).withOpacity(0.3),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 15, left: 80),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Work",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                "$doneCount1 Tasks",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Color(0xff797686),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 15, top: 15),
+                          child: CircularPercentIndicator(
+                            radius: 27
+                            ,
+                            lineWidth: 5,
+                            percent: percentProgress1,
+                            progressColor: const Color(0xfff478b8),
+                            backgroundColor: const Color(0xfff478b8).withOpacity(0.4),
+                            circularStrokeCap: CircularStrokeCap.round,
+                            center: Text(
+                              "${(percentProgress1*100).toStringAsFixed(1)} %",
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Container(
+                  height: 90,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 20),
+                          height: 45,
+                          width: 45,
+                          child: Icon(
+                            Icons.book,
+                            color: Color(0xffff9142),
+                            size: 32,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xffff9142).withOpacity(0.3),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 15, left: 80),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Daily Study",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                "$doneCount3 Tasks",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Color(0xff797686),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 15, top: 15),
+                          child: CircularPercentIndicator(
+                            radius: 27,
+                            lineWidth: 5,
+                            percent: percentProgress3,
+                            progressColor: const Color(0xfff478b8),
+                            backgroundColor: const Color(0xfff478b8).withOpacity(0.4),
+                            circularStrokeCap: CircularStrokeCap.round,
+                            center: Text(
+                              "${(percentProgress3*100).toStringAsFixed(1)} %",
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

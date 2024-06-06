@@ -81,6 +81,10 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     } else {
       Toast2222.showToast2();
     }
+    nameOfTaskController.clear();
+    descriptionController.clear();
+    startDateController.clear();
+    endDateController.clear();
   }
 
   DateTime selectedTime = DateTime.now();
@@ -171,11 +175,6 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
                         ),
-                      ),
-                      trailing: Icon(
-                        _navController.customTileExpanded.isFalse
-                            ? Icons.arrow_drop_down_sharp
-                            : Icons.arrow_drop_up,
                       ),
                       children: <Widget>[
                         ListTile(
@@ -428,6 +427,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
               hiveService.storeTasks(lst, key);
             }
             addKeyBox2();
+            Navigator.pushReplacementNamed(context, AddNewTaskScreen.id);
 
           },
           style: ElevatedButton.styleFrom(
